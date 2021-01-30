@@ -16,7 +16,6 @@ const connection = {
 
 const db = pgp()(connection);
 
-app.use(cors);
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 

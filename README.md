@@ -3,7 +3,7 @@
 To start:
 
 ```
-npm run build
+npm install
 ```
 to install the packages
 

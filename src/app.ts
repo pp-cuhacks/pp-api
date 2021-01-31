@@ -35,7 +35,7 @@ export async function insertUser(user: Partial<User>) {
   });
 }
 
-async function createPatient(userId: string, priority: string, postal: string) {
+async function createPatient(userId: string, priority: number, postal: string) {
   await db.none('INSERT INTO patients(patient_id, user_id, group_priority, postal_code) VALUES(${patientId}, ${userId}, ${priority}, ${postal})', {
     pid: uuidv4(),
     userId,
@@ -105,7 +105,7 @@ app.route('/v1/user/:id')
     const user = await getUserById(id);
     try {
       if (user.role === 'patient') {
-        await createPatient(user.userId, req.body.priority, req.body.postalCode);
+        await createPatient(user.userId, parseInt(req.body.priority), req.body.postalCode);
       } else {
         await createClinic(user.userId, req.body.address);
       }

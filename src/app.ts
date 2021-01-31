@@ -7,10 +7,12 @@ import GoogleOauthEntry from './oauth20-google';
 import { Clinic } from 'Clinic';
 import { Vaccine } from 'Vaccine';
 import { Patient } from 'Patient';
-import { create } from 'domain';
+import sgMail from '@sendgrid/mail';
 const path = require("path");
 
 const app = express();
+
+sgMail.setApiKey(process.env.SG_KEY);
 
 // Include Google OAuth2.0
 GoogleOauthEntry(app);
@@ -117,6 +119,26 @@ export async function updateVaccinesByClinic(id: string, name: string, quantity:
   });
 }
 
+async function sendEmails() {
+  const msg = {
+    to: 'chan.cy.patrick@gmail.com',
+    from: 'pphacks@patchan.dev',
+    subject: 'Book your COVID-19 Vaccination',
+    text: 'A vaccine is available for you! http://3.214.244.177/appointmentpage',
+    html: 'A vaccine is available for you! <a href="http://3.214.244.177/appointmentpage">Click here to book</a>',
+  }
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+      return msg;
+    })
+    .catch((error) => {
+      console.error(error)
+      throw error;
+    })
+}
+
 // create a new user
 app.post('/v1/user/', async (req, res) => {
   console.log('hitting post /v1/user');
@@ -194,6 +216,15 @@ app.route('/v1/clinic/:id/vaccine')
       res.status(400).send(err);
     }
   });
+
+app.get('/v1/email', async (req, res) => {
+  try {
+    const response = await sendEmails();
+    res.send(200).send(response);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "..", "build/")));

@@ -40,8 +40,8 @@ const GoogleOauth = new GoogleOauth20.Strategy(
         role: 'patient'
       }
       await insertUser(user);
-      return done(user);
     }
+    return done(user.email);
   }
 );
 

@@ -44,11 +44,11 @@ async function createPatient(userId: string, priority: string, postal: string) {
   });
 }
 
-async function createClinic(userId: string, address: string) {
-  await db.none('INSERT INTO clinics(clinic_id, user_id, address) VALUES(${clinicId}, ${userId}, ${address})', {
+async function createClinic(userId: string, postal: string) {
+  await db.none('INSERT INTO clinics(clinic_id, user_id, postal_code) VALUES(${clinicId}, ${userId}, ${postal})', {
     cid: uuidv4(),
     userId,
-    address
+    postal
   });
 }
 

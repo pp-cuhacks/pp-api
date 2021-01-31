@@ -34,7 +34,7 @@ const GoogleOauth = new GoogleOauth20.Strategy(
     const user = getUserByEmail(profile.emails[0].value);
     if (!user) {
       const user: Partial<User> = {
-        userId: uuidv4(),
+        user_id: uuidv4(),
         email: profile.emails[0].value,
         name: `${profile.name.givenName} ${profile.name.familyName}`,
         role: 'patient'

@@ -65,8 +65,9 @@ export async function getAllPatientUsers() {
 
 // create a new user
 app.post('/v1/user/', async (req, res) => {
-  console.log('hitting post /v1/user')
-  console.log(req);
+  console.log('hitting post /v1/user');
+  console.log('req.body: ')
+  console.log(req.body);
   const user = req.body as Partial<User>;
   user.userId = uuidv4();
 

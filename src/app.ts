@@ -110,9 +110,9 @@ app.route('/v1/user/:id')
     try {
       if (user.role === 'patient') {
         console.log(req.body);
-        await createPatient(user.userId, parseInt(req.body.priority), req.body.postalCode);
+        await createPatient(user.user_id, parseInt(req.body.priority), req.body.postalCode);
       } else {
-        await createClinic(user.userId, req.body.address);
+        await createClinic(user.user_id, req.body.address);
       }
       res.send(200);
     } catch (err) {

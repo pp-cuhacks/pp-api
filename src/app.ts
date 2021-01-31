@@ -62,8 +62,8 @@ async function createPatient(userId: string, priority: number, postal: string) {
 }
 
 async function updatePatientPriority(userId: string, priority: number) {
-  await db.none('UPDATE patients SET priority = ${pri} WHERE user_id = ${userId}', {
-    pri: priority,
+  await db.none('UPDATE patients SET group_priority = ${group_priority} WHERE user_id = ${userId}', {
+    group_priority: priority,
     userId
   });
 }

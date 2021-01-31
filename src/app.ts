@@ -4,6 +4,7 @@ import pgp from 'pg-promise';
 import { User } from 'User';
 import { v4 as uuidv4 } from 'uuid';
 import GoogleOauthEntry from './oauth20-google';
+const path = require("path");
 
 const app = express();
 
@@ -118,5 +119,10 @@ app.route('/v1/clinic/:id/vaccine')
   .post((req, res) => {
     const id = req.params.id;
   });
+
+app.get("/", (req, res) => {
+  // send landing page
+  res.sendFile(path.join(__dirname, "../build/index.html"));
+});
 
 export default app;

@@ -49,8 +49,7 @@ const GoogleOauth = new GoogleOauth20.Strategy(
       await insertUser(user);
     }
     console.log('returning done...');
-    return done(user)
-    // return done(user);
+    return done("none", user)
   }
 );
 

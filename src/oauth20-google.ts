@@ -34,8 +34,9 @@ const GoogleOauth = new GoogleOauth20.Strategy(
     console.log('profile:');
     console.log(profile);
     console.log('getting user');
+    var user;
     try {
-      const user = await getUserByEmail(profile.emails[0].value);
+      user = await getUserByEmail(profile.emails[0].value);
       console.log('got user', user);
     } catch (err) {
       const user_Id = uuidv4();
@@ -47,7 +48,8 @@ const GoogleOauth = new GoogleOauth20.Strategy(
       }
       await insertUser(user);
     }
-    return done()
+    console.log('returning done...');
+    return done(user)
     // return done(user);
   }
 );

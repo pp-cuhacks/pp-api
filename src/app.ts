@@ -126,7 +126,7 @@ app.route('/v1/clinic/:id/vaccine')
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "..", "build/")));
 
-app.get("/", (req, res) => {
+app.get("*", (req, res) => {
   // send landing page
   res.sendFile(path.join(__dirname, "../build/index.html"));
 });

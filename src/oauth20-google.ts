@@ -38,16 +38,16 @@ const GoogleOauth = new GoogleOauth20.Strategy(
       const user = getUserByEmail(profile.emails[0].value);
       console.log('got user', user);
     } catch (err) {
-      const userId = uuidv4();
+      const user_Id = uuidv4();
       const user: Partial<User> = {
-        user_id: uuidv4(),
+        user_id: user_Id,
         email: profile.emails[0].value,
         name: `${profile.name.givenName} ${profile.name.familyName}`,
         role: 'patient'
       }
       await insertUser(user);
     }
-
+    return done()
     // return done(user);
   }
 );

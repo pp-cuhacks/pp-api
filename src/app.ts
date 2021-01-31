@@ -107,6 +107,7 @@ app.route('/v1/user/:id')
 app.get('/v1/user/list', async (req, res) => {
   try {
     const response = await getAllPatientUsers();
+    console.log(response);
     res.status(200).send(response);
   } catch (err) {
     res.status(400).send(err);

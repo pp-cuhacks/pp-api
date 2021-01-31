@@ -109,6 +109,14 @@ export async function getVaccinesByClinic(id: string) {
   return await db.many<Vaccine>("SELECT * FROM vaccines v INNER JOIN clinics c ON clinic_id = ${id}", { id });
 }
 
+export async function updateVaccinesByClinic(id: string, name: string, quantity: number) {
+  return await db.none("UPDATE vaccines SET name = ${name}, quantity = ${quantity} WHERE clinic_id = ${id}", {
+    name,
+    quantity,
+    id
+  });
+}
+
 // create a new user
 app.post('/v1/user/', async (req, res) => {
   console.log('hitting post /v1/user');
@@ -175,8 +183,16 @@ app.route('/v1/clinic/:id/vaccine')
       res.status(400).send(err);
     }
   })
-  .post((req, res) => {
+  .post(async (req, res) => {
     const id = req.params.id;
+    const vaccine: Partial<Vaccine> = req.body;
+    try {
+      await updateVaccinesByClinic(id, vaccine.name, vaccine.quantity);
+      res.send(204);
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
   });
 
 // Serve static files from the React app

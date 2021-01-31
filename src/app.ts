@@ -108,7 +108,7 @@ export async function getClinicById(id: string) {
 }
 
 export async function getVaccinesByClinic(id: string) {
-  return await db.many<Vaccine>("SELECT * FROM vaccines v INNER JOIN clinics c ON v.clinic_id = c.clinic_id");
+  return await db.many<Vaccine>("SELECT v.id, v.clinic_id, v.name, v.quantity FROM vaccines v INNER JOIN clinics c ON v.clinic_id = c.clinic_id");
 }
 
 export async function updateVaccinesByClinic(id: string, name: string, quantity: number) {

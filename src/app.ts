@@ -217,23 +217,11 @@ app.route('/v1/clinic/:id/vaccine')
     }
   });
 
-app.route('/email')
-.get(async (req, res) => {
+app.get('/v1/email', async (req, res) => {
   try {
     const response = await sendEmails();
     res.send(200).send(response);
   } catch (err) {
-    res.status(400).send(err);
-  }
-})
-.post(async (req, res) => {
-  const id = req.params.id;
-  const vaccine: Partial<Vaccine> = req.body;
-  try {
-    await updateVaccinesByClinic(id, vaccine.name, vaccine.quantity);
-    res.send(204);
-  } catch (err) {
-    console.log(err);
     res.status(400).send(err);
   }
 });

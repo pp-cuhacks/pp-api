@@ -5,6 +5,10 @@ import { getUserByEmail, insertUser } from './app';
 import { v4 as uuidv4 } from 'uuid';
 
 const OAuth20Google = (app) => {
+  // Passport/session initialization
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   app.get('/auth/google',
     passport.authenticate('google', {
       scope: ['profile', 'email']
@@ -49,7 +53,7 @@ const GoogleOauth = new GoogleOauth20.Strategy(
       await insertUser(user);
     }
     console.log('returning done...');
-    return done(null, {id: user.user_id, email: user.email })
+    return done(null, profile)
   }
 );
 

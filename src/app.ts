@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import pgp from 'pg-promise';
+import pgp, { QueryFile } from 'pg-promise';
+import { User } from 'User';
+import uuid from 'uuid';
 import GoogleOauthEntry from './oauth20-google';
 
 const app = express();
@@ -23,27 +25,79 @@ const db = pgp()(connection);
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 
-app.put('/v1/user', (req, res) => {
-  const email = req.body.email;
-  db.none('INSERT INTO users');
+async function insertUser(user: Partial<User>) {
+  await db.none('INSERT INTO users(user_id, email, password, name, role) VALUES(${id}, ${email}, ${pass}, ${name}, ${role})', {
+    id: user.userId,
+    email: user.email,
+    pass: user.password,
+    name: user.name,
+    role: user.role,
+  });
+}
+
+async function insertPatient(userId: string, priority: string, postal: string) {
+  await db.none('INSERT INTO patients(patient_id, user_id, group_priority, postal_code) VALUES(${patientId}, ${userId}, ${priority}, ${postal})', {
+    pid: uuid(),
+    userId,
+    priority,
+    postal
+  });
+}
+
+async function insertClinic(userId: string, address: string) {
+  await db.none('INSERT INTO clinics(clinic_id, user_id, address) VALUES(${clinicId}, ${userId}, ${address})', {
+    cid: uuid(),
+    userId,
+    address
+  });
+}
+
+function importSql(filePath: string) {
+  return new QueryFile(filePath, { minify: true });
+}
+
+const queries = {
+  addPatient: importSql('./queries/addPatient.sql'),
+  addClinic: importSql('./queries/addClinic.sql'),
+};
+
+// create a new user
+app.put('/v1/user', async (req, res) => {
+  const user = req.body as Partial<User>;
+  user.userId = uuid();
+
+  try {
+    await insertUser(user);
+    res.send(204);
+  } catch (err) {
+    res.send(400, err);
+  }
 });
 
 app.route('/v1/user/:id')
-  .get((req, res) => {
+  // get user information
+  .get(async (req, res) => {
     const id = req.params.id;
+    try {
+      const response = await db.one('SELECT * FROM users WHERE user_id = ${id}', { id });
+      res.send(200, response);
+    } catch (err) {
+      res.send(400, err);
+    }
   })
+  // update user with info (postal code, priority group)
   .post((req, res) => {
-
+    const id = req.params.id;
   });
 
 app.get('/v1/user/list');
 
-app.route('/v1/vaccine')
+app.route('/v1/clinic/:id/vaccine')
   .get((req, res) => {
-
+    const id = req.params.id;
   })
   .post((req, res) => {
-
+    const id = req.params.id;
   });
 
 export default app;

@@ -163,5 +163,9 @@ app.get("/signuppage", (req, res) => {
   // send landing page
   res.sendFile(path.join(__dirname, "../build/index.html"));
 });
+app.get("/userhomepage", (req, res) => {
+  // send landing page
+  res.sendFile(path.join(__dirname, "../build/index.html"));
+});
 
 export default app;

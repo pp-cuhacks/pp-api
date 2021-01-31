@@ -53,11 +53,11 @@ async function createClinic(userId: string, postal: string) {
 }
 
 export async function getUserById(id: string) {
-  return await db.one<User>("SELECT * FROM users WHERE user_id = '${id}'", { id });
+  return await db.one<User>("SELECT * FROM users WHERE user_id = ${id}", { id });
 }
 
 export async function getUserByEmail(email: string) {
-  return await db.one<User>("SELECT * FROM users WHERE email = '${email}'", { email });
+  return await db.one<User>("SELECT * FROM users WHERE email = ${email}", { email });
 }
 
 export async function getAllPatientUsers() {

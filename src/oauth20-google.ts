@@ -1,7 +1,7 @@
 const passport = require('passport');
 const GoogleOauth20Strategy = require("passport-google-oauth20");
 // TODO: Implement Users
-const Users = require('');
+const Users = null;
 
 const OAuth20Google = (app) => {
     app.get('/auth/google',

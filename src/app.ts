@@ -1,15 +1,14 @@
 import express from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
 import pgp from 'pg-promise';
 import { User } from 'User';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import GoogleOauthEntry from './oauth20-google';
 
 const app = express();
 
 // Include Google OAuth2.0
-GoogleOauthEntry(app);
+// GoogleOauthEntry(app);
 
 const connection = {
   host: process.env.DB_HOST,
@@ -25,43 +24,54 @@ const db = pgp()(connection);
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 
-async function insertUser(user: Partial<User>) {
-  await db.none('INSERT INTO users(user_id, email, password, name, role) VALUES(${id}, ${email}, ${pass}, ${name}, ${role})', {
+export async function insertUser(user: Partial<User>) {
+  await db.none('INSERT INTO users(user_id, email, name, role) VALUES(${id}, ${email}, ${name}, ${role})', {
     id: user.userId,
     email: user.email,
-    pass: user.password,
     name: user.name,
     role: user.role,
   });
 }
 
-async function insertPatient(userId: string, priority: string, postal: string) {
+async function createPatient(userId: string, priority: string, postal: string) {
   await db.none('INSERT INTO patients(patient_id, user_id, group_priority, postal_code) VALUES(${patientId}, ${userId}, ${priority}, ${postal})', {
-    pid: uuid(),
+    pid: uuidv4(),
     userId,
     priority,
     postal
   });
 }
 
-async function insertClinic(userId: string, address: string) {
+async function createClinic(userId: string, address: string) {
   await db.none('INSERT INTO clinics(clinic_id, user_id, address) VALUES(${clinicId}, ${userId}, ${address})', {
-    cid: uuid(),
+    cid: uuidv4(),
     userId,
     address
   });
 }
 
+export async function getUserById(id: string) {
+  return await db.one<User>('SELECT * FROM users WHERE user_id = ${id}', { id });
+}
+
+export async function getUserByEmail(email: string) {
+  return await db.one<User>('SELECT * FROM users WHERE email = ${email}', { email });
+}
+
+export async function getAllPatientUsers() {
+  return await db.one<User[]>('SELECT * FROM patients p INNER JOIN users u ON u.user_id = p.user_id');
+}
+
 // create a new user
 app.put('/v1/user', async (req, res) => {
   const user = req.body as Partial<User>;
-  user.userId = uuid();
+  user.userId = uuidv4();
 
   try {
     await insertUser(user);
     res.send(204);
   } catch (err) {
-    res.send(400, err);
+    res.status(400).send(err);
   }
 });
 
@@ -70,18 +80,36 @@ app.route('/v1/user/:id')
   .get(async (req, res) => {
     const id = req.params.id;
     try {
-      const response = await db.one('SELECT * FROM users WHERE user_id = ${id}', { id });
-      res.send(200, response);
+      const response = getUserById(id);
+      res.status(200).send(response);
     } catch (err) {
-      res.send(400, err);
+      res.status(400).send(err);
     }
   })
   // update user with info (postal code, priority group)
-  .post((req, res) => {
+  .post(async (req, res) => {
     const id = req.params.id;
+    const user = await getUserById(id);
+    try {
+      if (user.role === 'patient') {
+        await createPatient(user.userId, req.body.priority, req.body.postalCode);
+      } else {
+        await createClinic(user.userId, req.body.address);
+      }
+      res.send(200);
+    } catch (err) {
+      res.status(400).send(err);
+    }
   });
 
-app.get('/v1/user/list');
+app.get('/v1/user/list', async (req, res) => {
+  try {
+    const response = await getAllPatientUsers();
+    res.status(200).send(response);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
 
 app.route('/v1/clinic/:id/vaccine')
   .get((req, res) => {

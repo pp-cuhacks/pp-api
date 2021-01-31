@@ -4,8 +4,12 @@ import bodyParser from 'body-parser';
 import pgp, { QueryFile } from 'pg-promise';
 import { User } from 'User';
 import uuid from 'uuid';
+import GoogleOauthEntry from './oauth20-google';
 
 const app = express();
+
+// Include Google OAuth2.0
+GoogleOauthEntry(app);
 
 const connection = {
   host: process.env.DB_HOST,
@@ -18,7 +22,6 @@ const connection = {
 
 const db = pgp()(connection);
 
-app.use(cors);
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 

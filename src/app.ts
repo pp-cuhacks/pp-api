@@ -63,7 +63,7 @@ export async function getUserByEmail(email: string) {
 }
 
 export async function getAllPatientUsers() {
-  return await db.one<User[]>('SELECT * FROM patients p INNER JOIN users u ON u.user_id = p.user_id');
+  return await db.many<User[]>('SELECT * FROM patients p INNER JOIN users u ON u.user_id = p.user_id');
 }
 
 // create a new user

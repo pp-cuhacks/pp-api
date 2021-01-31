@@ -45,7 +45,7 @@ async function createOrUpdatePatient(userId: string, priority: number, postal: s
   });
 
   if (result) {
-    return;
+    return await updatePatientPriority(userId, priority);
   }
 
   await createPatient(userId, priority, postal);
@@ -58,6 +58,13 @@ async function createPatient(userId: string, priority: number, postal: string) {
     userId,
     priority,
     postal
+  });
+}
+
+async function updatePatientPriority(userId: string, priority: number) {
+  await db.none('UPDATE patients SET priority = ${pri} WHER user_id = ${userId}', {
+    pri: priority,
+    userId
   });
 }
 

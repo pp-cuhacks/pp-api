@@ -200,5 +200,9 @@ app.get("/userhomepage", (req, res) => {
   // send landing page
   res.sendFile(path.join(__dirname, "../build/index.html"));
 });
+app.get("/adminhomepage", (req, res) => {
+  // send landing page
+  res.sendFile(path.join(__dirname, "../build/index.html"));
+});
 
 export default app;

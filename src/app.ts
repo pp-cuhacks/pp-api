@@ -124,8 +124,8 @@ async function sendEmails() {
     to: 'chan.cy.patrick@gmail.com',
     from: 'pphacks@patchan.dev',
     subject: 'Book your COVID-19 Vaccination',
-    text: 'A vaccine is available for you! http://3.214.244.177/appointmentpage',
-    html: 'A vaccine is available for you! <a href="http://3.214.244.177/appointmentpage">Click here to book</a>',
+    text: 'A vaccine is available for you! http://patrickchan.me/appointmentpage',
+    html: 'A vaccine is available for you! <a href="http://patrickchan.me/appointmentpage">Click here to book</a>',
   }
   sgMail
     .send(msg)

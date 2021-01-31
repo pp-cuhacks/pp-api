@@ -154,4 +154,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../build/index.html"));
 });
 
+// adding paths because /* breaks things
+app.get("/loginpage", (req, res) => {
+  // send landing page
+  res.sendFile(path.join(__dirname, "../build/index.html"));
+});
+
 export default app;

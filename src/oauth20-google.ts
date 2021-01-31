@@ -5,6 +5,10 @@ import { getUserByEmail, insertUser } from './app';
 import { v4 as uuidv4 } from 'uuid';
 
 const OAuth20Google = (app) => {
+  // Passport/session initialization
+  app.use(passport.initialize());
+  app.use(passport.session());
+
   app.get('/auth/google',
     passport.authenticate('google', {
       scope: ['profile', 'email']
@@ -20,8 +24,18 @@ const OAuth20Google = (app) => {
       res.redirect("/userhomepage");
     }
   );
-  
+
   passport.use(GoogleOauth);
+
+  // Used to stuff a piece of information into a cookie
+  passport.serializeUser((user, done) => {
+    done(null, user);
+  });
+
+  // Used to decode the received cookie and persist session
+  passport.deserializeUser((user, done) => {
+    done(null, user);
+  });
 }
 
 const GoogleOauth = new GoogleOauth20.Strategy(
@@ -31,24 +45,20 @@ const GoogleOauth = new GoogleOauth20.Strategy(
     callbackURL: process.env.OAUTH_GOOGLE_CLIENT_CALLBACK_URL,
   },
   async function (accessToken, refreshToken, profile, done) {
-    console.log('profile:');
-    console.log(profile);
-    console.log('getting user');
+    var user;
     try {
-      const user = await getUserByEmail(profile.emails[0].value);
-      console.log('got user', user);
+      user = await getUserByEmail(profile.emails[0].value);
     } catch (err) {
-      const userId = uuidv4();
+      const user_Id = uuidv4();
       const user: Partial<User> = {
-        user_id: uuidv4(),
+        user_id: user_Id,
         email: profile.emails[0].value,
         name: `${profile.name.givenName} ${profile.name.familyName}`,
         role: 'patient'
       }
       await insertUser(user);
     }
-
-    // return done(user);
+    return done(null, profile)
   }
 );
 

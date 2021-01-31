@@ -121,8 +121,8 @@ export async function updateVaccinesByClinic(id: string, name: string, quantity:
 
 async function sendEmails() {
   const msg = {
-    to: 'chan.cy.patrick+1@gmail.com',
-    from: 'chan.cy.patrick@gmail.com',
+    to: 'chan.cy.patrick@gmail.com',
+    from: 'hall.jerry9@gmail.com',
     subject: 'Book your COVID-19 Vaccination',
     text: 'A vaccine is available for you! http://3.214.244.177/appointmentpage',
     html: 'A vaccine is available for you! <a href="http://3.214.244.177/appointmentpage">Click here to book</a>',

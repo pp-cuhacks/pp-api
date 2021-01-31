@@ -255,9 +255,5 @@ app.get("/appointmentpage", (req, res) => {
   // send landing page
   res.sendFile(path.join(__dirname, "../build/index.html"));
 });
-app.get("/test", (req, res) => {
-  // send landing page
-  res.send('hello');
-});
 
 export default app;

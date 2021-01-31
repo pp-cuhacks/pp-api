@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import pgp, { QueryFile } from 'pg-promise';
+import pgp from 'pg-promise';
 import { User } from 'User';
 import uuid from 'uuid';
 
@@ -48,15 +48,6 @@ async function insertClinic(userId: string, address: string) {
     address
   });
 }
-
-function importSql(filePath: string) {
-  return new QueryFile(filePath, { minify: true });
-}
-
-const queries = {
-  addPatient: importSql('./queries/addPatient.sql'),
-  addClinic: importSql('./queries/addClinic.sql'),
-};
 
 // create a new user
 app.put('/v1/user', async (req, res) => {

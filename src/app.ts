@@ -76,6 +76,15 @@ app.post('/v1/user', async (req, res) => {
   }
 });
 
+app.get('/v1/user/list', async (req, res) => {
+  try {
+    const response = await getAllPatientUsers();
+    res.status(200).send(response);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
 app.route('/v1/user/:id')
   // get user information
   .get(async (req, res) => {
@@ -102,15 +111,6 @@ app.route('/v1/user/:id')
       res.status(400).send(err);
     }
   });
-
-app.get('/v1/user/list', async (req, res) => {
-  try {
-    const response = await getAllPatientUsers();
-    res.status(200).send(response);
-  } catch (err) {
-    res.status(400).send(err);
-  }
-});
 
 app.route('/v1/clinic/:id/vaccine')
   .get((req, res) => {

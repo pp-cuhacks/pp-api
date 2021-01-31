@@ -53,11 +53,11 @@ async function createClinic(userId: string, postal: string) {
 }
 
 export async function getUserById(id: string) {
-  return await db.one<User>('SELECT * FROM users WHERE user_id = ${id}', { id });
+  return await db.one<User>("SELECT * FROM users WHERE user_id = '${id}'", { id });
 }
 
 export async function getUserByEmail(email: string) {
-  return await db.one<User>('SELECT * FROM users WHERE email = ${email}', { email });
+  return await db.one<User>("SELECT * FROM users WHERE email = '${email}'", { email });
 }
 
 export async function getAllPatientUsers() {
@@ -102,7 +102,9 @@ app.route('/v1/user/:id')
   // update user with info (postal code, priority group)
   .post(async (req, res) => {
     const id = req.params.id;
+    console.log(id);
     const user = await getUserById(id);
+    console.log(user);
     try {
       if (user.role === 'patient') {
         console.log(req.body);

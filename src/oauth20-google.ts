@@ -31,7 +31,7 @@ const GoogleOauth = new GoogleOauth20.Strategy(
     callbackURL: process.env.OAUTH_GOOGLE_CLIENT_CALLBACK_URL,
   },
   async function (accessToken, refreshToken, profile, done) {
-    const user = getUserByEmail(profile.emails[0].value);
+    const user = await getUserByEmail(profile.emails[0].value);
     if (!user) {
       const user: Partial<User> = {
         user_id: uuidv4(),
@@ -41,7 +41,7 @@ const GoogleOauth = new GoogleOauth20.Strategy(
       }
       await insertUser(user);
     }
-    return done(user.email);
+    return done(user);
   }
 );
 

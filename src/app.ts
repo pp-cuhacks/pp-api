@@ -26,8 +26,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.text());
 
 export async function insertUser(user: Partial<User>) {
+  const userId = uuidv4();
   await db.none('INSERT INTO users(user_id, email, name, role) VALUES(${id}, ${email}, ${name}, ${role})', {
-    id: user.userId,
+    id: userId,
     email: user.email,
     name: user.name,
     role: user.role,
@@ -67,7 +68,6 @@ export async function getAllPatientUsers() {
 app.post('/v1/user', async (req, res) => {
   console.log(req);
   const user = req.body as Partial<User>;
-  user.userId = uuidv4();
 
   try {
     await insertUser(user);

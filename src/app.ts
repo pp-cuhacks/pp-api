@@ -64,7 +64,7 @@ export async function getAllPatientUsers() {
 }
 
 // create a new user
-app.put('/v1/user', async (req, res) => {
+app.post('/v1/user', async (req, res) => {
   const user = req.body as Partial<User>;
   user.userId = uuidv4();
 

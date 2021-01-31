@@ -207,9 +207,8 @@ app.route('/v1/clinic/:id/vaccine')
   })
   .post(async (req, res) => {
     const id = req.params.id;
-    const vaccine: Partial<Vaccine> = req.body;
     try {
-      await updateVaccinesByClinic(id, vaccine.name, vaccine.quantity);
+      await updateVaccinesByClinic(id, req.body.name, parseInt(req.body.quantity));
       res.send(204);
     } catch (err) {
       console.log(err);

@@ -8,7 +8,7 @@ import GoogleOauthEntry from './oauth20-google';
 const app = express();
 
 // Include Google OAuth2.0
-// GoogleOauthEntry(app);
+GoogleOauthEntry(app);
 
 const connection = {
   host: process.env.DB_HOST,

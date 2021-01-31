@@ -20,7 +20,7 @@ const OAuth20Google = (app) => {
       res.redirect("/userhomepage");
     }
   );
-  
+  app.use(passport.initialize());
   passport.use(GoogleOauth);
 }
 

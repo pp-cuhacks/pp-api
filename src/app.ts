@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import GoogleOauthEntry from './oauth20-google';
 import { Clinic } from 'Clinic';
 import { Vaccine } from 'Vaccine';
+import { Patient } from 'Patient';
+import { create } from 'domain';
 const path = require("path");
 
 const app = express();
@@ -37,6 +39,18 @@ export async function insertUser(user: Partial<User>) {
   });
 }
 
+async function createOrUpdatePatient(userId: string, priority: number, postal: string) {
+  const result = await db.oneOrNone<Patient>('SELECT * FROM patients WHERE user_id = ${userId}', {
+    userId
+  });
+
+  if (result) {
+    return;
+  }
+
+  await createPatient(userId, priority, postal);
+}
+
 async function createPatient(userId: string, priority: number, postal: string) {
   const patient_id = uuidv4();
   await db.none('INSERT INTO patients(patient_id, user_id, group_priority, postal_code) VALUES(${patientId}, ${userId}, ${priority}, ${postal})', {
@@ -47,10 +61,22 @@ async function createPatient(userId: string, priority: number, postal: string) {
   });
 }
 
+async function createOrUpdateClinic(userId: string, postal: string) {
+  const result = await db.oneOrNone<Clinic>('SELECT * FROM clinics WHERE user_id = ${userId}', {
+    userId
+  });
+
+  if (result) {
+    return;
+  }
+
+  await createClinic(userId, postal);
+}
+
 async function createClinic(userId: string, postal: string) {
   const clinicId = uuidv4();
   await db.none('INSERT INTO clinics(clinic_id, user_id, postal_code) VALUES(${clinicId}, ${userId}, ${postal})', {
-    patientId: clinicId,
+    clinicId,
     userId,
     postal
   });
@@ -120,9 +146,9 @@ app.route('/v1/user/:id')
     try {
       if (user.role === 'patient') {
         console.log(req.body);
-        await createPatient(user.user_id, parseInt(req.body.priority), req.body.postalCode);
+        await createOrUpdatePatient(user.user_id, parseInt(req.body.priority), req.body.postalCode);
       } else {
-        await createClinic(user.user_id, req.body.address);
+        await createOrUpdateClinic(user.user_id, req.body.address);
       }
       res.send(200);
     } catch (err) {

@@ -35,7 +35,7 @@ const GoogleOauth = new GoogleOauth20.Strategy(
     console.log(profile);
     console.log('getting user');
     try {
-      const user = await getUserByEmail(profile.emails[0].value);
+      const user = getUserByEmail(profile.emails[0].value);
       console.log('got user', user);
     } catch (err) {
       const userId = uuidv4();

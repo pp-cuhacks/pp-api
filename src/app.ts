@@ -112,7 +112,7 @@ export async function getVaccinesByClinic(id: string) {
 }
 
 export async function updateVaccinesByClinic(id: string, name: string, quantity: number) {
-  return await db.none("UPDATE vaccines SET name = ${name}, quantity = ${quantity} WHERE clinic_id = ${id}", {
+  return await db.none("UPDATE vaccines SET quantity = quantity + ${quantity} WHERE name = ${name} AND clinic_id = ${id}", {
     name,
     quantity,
     id

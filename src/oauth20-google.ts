@@ -20,7 +20,7 @@ const OAuth20Google = (app) => {
       res.redirect("/userhomepage");
     }
   );
-  app.use(passport.initialize());
+
   passport.use(GoogleOauth);
 }
 
@@ -49,7 +49,7 @@ const GoogleOauth = new GoogleOauth20.Strategy(
       await insertUser(user);
     }
     console.log('returning done...');
-    return done(null, profile)
+    return done(null, {id: user.user_id, email: user.email })
   }
 );
 

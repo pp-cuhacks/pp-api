@@ -36,8 +36,9 @@ export async function insertUser(user: Partial<User>) {
 }
 
 async function createPatient(userId: string, priority: number, postal: string) {
+  const patient_id = uuidv4();
   await db.none('INSERT INTO patients(patient_id, user_id, group_priority, postal_code) VALUES(${patientId}, ${userId}, ${priority}, ${postal})', {
-    pid: uuidv4(),
+    pid: patient_id,
     userId,
     priority,
     postal
@@ -45,8 +46,9 @@ async function createPatient(userId: string, priority: number, postal: string) {
 }
 
 async function createClinic(userId: string, postal: string) {
+  const clinicId = uuidv4();
   await db.none('INSERT INTO clinics(clinic_id, user_id, postal_code) VALUES(${clinicId}, ${userId}, ${postal})', {
-    cid: uuidv4(),
+    cid: clinicId,
     userId,
     postal
   });

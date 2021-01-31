@@ -31,7 +31,7 @@ const GoogleOauth = new GoogleOauth20.Strategy(
     callbackURL: process.env.OAUTH_GOOGLE_CLIENT_CALLBACK_URL,
   },
   async function (accessToken, refreshToken, profile, done) {
-    console.log('getting user')''
+    console.log('getting user')
     const user = await getUserByEmail(profile.emails[0].value);
     console.log('got user');
     console.log(user);
